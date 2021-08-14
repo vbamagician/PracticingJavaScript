@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice: Basic JavaScript</title>
+</head>
+
+<body>
+    <div style="margin: 0px;">
+        <input id="amount" type="text">
+        <input id="detail" type="text">
+        <button id="add">Add</button>
+    </div>
+    <div id="output"></div>
+
+    <script>
+
+        const amountField = document.getElementById("amount");
+        const detailField = document.getElementById("detail");
+        const addExpense = document.getElementById("add");
+        const outputField = document.getElementById("output");
+        const allExpenses = [];
+        let counter = 0;
+        addExpense.addEventListener("click", addToOutput);
+
+        // Model Function
+        function addToOutput() {
+
+            counter++;
+            const expenses = {};
+            expenses.id = counter;
+            expenses.amount = amountField.value;    
+            expenses.detail = detailField.value;
+            expenses.moment = new Date();
+            allExpenses.push(expenses);
+        
+            if (expenses.amount && expenses.detail) {
+                const allExpensesHTML = allExpenses.map(expense => formArrayElement(expense.id, expense.amount, expense.detail, expense.moment));
+                outputField.innerHTML = allExpensesHTML.join("");
+            }
+        }
+
+        //controler function 
+        function getDateString(moment) {
+            return moment.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }   
+
+        function deleteButtonAction(id) {
+            const targetId = parseInt(id);
+            for (let i = 0; i < allExpenses.length; i++){
+                let oneOfItem = parseInt(allExpenses[i].id);
+                if (oneOfItem === id) {
+                    allExpenses.splice(i,1);
+                    const allExpensesHTML = allExpenses.map(expense => formArrayElement(expense.id, expense.amount, expense.detail, expense.moment));
+                    outputField.innerHTML = allExpensesHTML.join("");
+                }
+            }
+        }
+    
+        //view function
+        function formArrayElement(id, amount, detail, moment) {
+            return `
+                <div style="text-align: center">
+                    <h1>${id} :: ${amount} :: ${detail} :: ${getDateString(moment)} :: <button onClick="deleteButtonAction(${id})" style="margin: 10px;" id="delete">Delete</button></h1>
+                </div>
+            `;
+        }
+
+    </script>
+</body>
+</html>
